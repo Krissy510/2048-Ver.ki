@@ -11,7 +11,9 @@ Features
 6. Menu<br/>
 7. Personal score<br/>
 8. Change password<br/>
-9. Change user<br/>Todo-list tmrw<br/>
+9. Change user<br/>
+
+Todo-list tmrw<br/>
 1. Write flowchart<br/>
 2. Clear the main code<br/>
 3. Finish design UI<br/>
