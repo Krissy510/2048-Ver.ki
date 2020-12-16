@@ -5,12 +5,12 @@ Not to mention that it is a good opportunity for me to practice my basic skill o
 Features
 1. The normal gameplay that you would normally have<br/>
 2. The UI for the game<br/>
-3. The Userdata<br/>
+3. The Userdata - Finished<br/>
 4. Leader board<br/>
-5. Save profile picture<br/>
+5. Save profile picture - Finished<br/>
 6. Menu<br/>
-7. Personal score<br/>
-8. Change password<br/>
+7. Personal score - Finished<br/>
+8. Change password - Finished<br/>
 9. Change user<br/>
 
 Todo-list tmrw<br/>
