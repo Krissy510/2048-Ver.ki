@@ -8,7 +8,7 @@ class Ui_entranceSection(object):
         # Create background
         self.bg = QtWidgets.QLabel(self.centralwidget)
         self.bg.setGeometry(QtCore.QRect(0, 0, 1000, 700))
-        self.bg.setPixmap(QtGui.QPixmap("sourcepic\\bg1.jpg"))
+        self.bg.setPixmap(QtGui.QPixmap("sourcepic\\bgplain1.png"))
         # Create login button
         self.loginbt = QtWidgets.QPushButton(self.centralwidget)
         self.loginbt.setText("Login")

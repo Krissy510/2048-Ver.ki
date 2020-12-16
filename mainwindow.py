@@ -88,7 +88,7 @@ class EntUI(QWidget):
     def gotomenu(self):
         global player
         player = "Guest"
-        widget.setCurrentIndex(5)
+        widget.setCurrentIndex(3)
 
 
 class LoginandRegisterBaseUI(QWidget):
@@ -122,7 +122,7 @@ class LoginandRegisterBaseUI(QWidget):
             return 0
 
     def checkPassFormat(self,ps):
-        if ps != "" or " " in ps:
+        if ps != "" and " " not in ps:
             if self.checkPasswordFormat(ps):
                 return 1
             else:
@@ -131,7 +131,7 @@ class LoginandRegisterBaseUI(QWidget):
             return 0
 
     def checkBDFormat(self,bd):
-        if bd != "" or " " in bd:
+        if bd != "" and  " " not in bd:
             if len(bd) != 5:
                 return -1
             elif bd[2] != "/":
@@ -162,7 +162,7 @@ class LoginandRegisterBaseUI(QWidget):
             return 0
 
     def checkPN(self,pn):
-        if pn != "" or " " in pn:
+        if pn != "" and " " not in pn:
             if 4 <= len(pn) <= 12:
                 if pn.isdigit():
                     if DBedit().checkItemExist(pn,"pnum"):
@@ -190,12 +190,12 @@ class LoginUI(LoginandRegisterBaseUI):
         super(LoginUI, self).__init__()
         # Create forgot password bt
         self.fpbt = QtWidgets.QPushButton(self.ui.centralwidget)
-        self.fpbt.setGeometry(QtCore.QRect(760, 630, 230, 51))
+        self.fpbt.setGeometry(QtCore.QRect(720, 600, 230, 51))
         font = QtGui.QFont()
         font.setFamily("OCR A Extended")
-        font.setPointSize(16)
+        font.setPointSize(10)
         self.fpbt.setFont(font)
-        self.fpbt.setText("Forgot Password?")
+        self.fpbt.setText("Forgot\nPassword?")
         self.fpbt.setObjectName("fpbt")
         # self.ui.backbt.clicked.connect(self.gobackMenu)
         self.ui.loginbt.clicked.connect(self.loginbtPressed)
@@ -246,82 +246,68 @@ class RegisterUI(LoginandRegisterBaseUI):
         # Create confirmation label
         self.confirmationlbl = QtWidgets.QLabel(self.ui.centralwidget)
         self.confirmationlbl.setGeometry(QtCore.QRect(225, 250, 139, 31))
-        self.confirmationlbl.setText("Confirmation")
+        self.confirmationlbl.setText("Confirm")
         font = QtGui.QFont()
         font.setFamily("OCR A Extended")
-        font.setBold(True)
-        font.setPointSize(11)
+        font.setPointSize(12)
         self.confirmationlbl.setFont(font)
         self.confirmationlbl.setAlignment(QtCore.Qt.AlignCenter)
-        self.confirmationlbl.setObjectName("confirmationlbl")
         # Create confirmation line edit
         self.confirmationLE = QtWidgets.QLineEdit(self.ui.centralwidget)
         self.confirmationLE.setEchoMode(QtWidgets.QLineEdit.Password)
         self.confirmationLE.setGeometry(QtCore.QRect(360, 250, 291, 31))
-        font.setBold(False)
-        font.setPointSize(16)
         self.confirmationLE.setFont(font)
-        self.confirmationLE.setObjectName("confirmationLE")
         # Create birth date label
         self.bdlbl = QtWidgets.QLabel(self.ui.centralwidget)
         self.bdlbl.setGeometry(QtCore.QRect(220, 310, 141, 31))
         self.bdlbl.setText("Birth date")
         self.bdlbl.setFont(font)
         self.bdlbl.setAlignment(QtCore.Qt.AlignCenter)
-        self.bdlbl.setObjectName("bdlbl")
         # Create birth date line edit
         self.bdLE = QtWidgets.QLineEdit(self.ui.centralwidget)
         self.bdLE.setGeometry(QtCore.QRect(360, 310, 291, 31))
         self.bdLE.setFont(font)
-        self.bdLE.setObjectName("bdLE")
         # Create phone number line edit
         self.pnLE = QtWidgets.QLineEdit(self.ui.centralwidget)
         self.pnLE.setGeometry(QtCore.QRect(360, 370, 291, 31))
         self.pnLE.setFont(font)
-        self.pnLE.setObjectName("pnLE")
         # Create phone number label
         self.pnlbl = QtWidgets.QLabel(self.ui.centralwidget)
         self.pnlbl.setGeometry(QtCore.QRect(220, 370, 141, 31))
         self.pnlbl.setText("Phone num")
         self.pnlbl.setFont(font)
         self.pnlbl.setAlignment(QtCore.Qt.AlignCenter)
-        self.pnlbl.setObjectName("pnlbl")
         # Create error user label
         self.erroruslbl = QtWidgets.QLabel(self.ui.centralwidget)
         self.erroruslbl.setStyleSheet("color: red;")
         self.erroruslbl.setGeometry(QtCore.QRect(660, 130, 321, 31))
-        font.setPointSize(11)
+        font.setPointSize(9)
         self.erroruslbl.setFont(font)
-        self.erroruslbl.setObjectName("erroruslbl")
         # Create error password label
         self.errorpslbl = QtWidgets.QLabel(self.ui.centralwidget)
         self.errorpslbl.setStyleSheet("color: red;")
         self.errorpslbl.setGeometry(QtCore.QRect(660, 190, 321, 31))
         self.errorpslbl.setFont(font)
-        self.errorpslbl.setObjectName("errorpslbl")
         # Create error confirmation label
         self.errorcnlbl = QtWidgets.QLabel(self.ui.centralwidget)
         self.errorcnlbl.setStyleSheet("color: red;")
         self.errorcnlbl.setGeometry(QtCore.QRect(660, 250, 321, 31))
         self.errorcnlbl.setFont(font)
-        self.errorcnlbl.setObjectName("errorcnlbl")
         # Create error birth date label
         self.errorbdlbl = QtWidgets.QLabel(self.ui.centralwidget)
         self.errorbdlbl.setStyleSheet("color: red;")
         self.errorbdlbl.setGeometry(QtCore.QRect(660, 310, 321, 31))
         self.errorbdlbl.setFont(font)
-        self.errorbdlbl.setObjectName("errorbdlbl")
         # Create error birth phonenumber label
         self.errorpnlbl = QtWidgets.QLabel(self.ui.centralwidget)
         self.errorpnlbl.setStyleSheet("color: red;")
         self.errorpnlbl.setGeometry(QtCore.QRect(660, 370, 321, 31))
         self.errorpnlbl.setFont(font)
-        self.errorpnlbl.setObjectName("errorpnlbl")
         # Create example birth date label
         self.exbdlbl = QtWidgets.QLabel(self.ui.centralwidget)
         self.exbdlbl.setGeometry(QtCore.QRect(360, 279, 201, 31))
         font.setFamily("Nirmala UI")
-        font.setPointSize(12)
+        font.setPointSize(10)
         self.exbdlbl.setText("Example: 05/10")
         self.exbdlbl.setFont(font)
         # Create example phone number label
@@ -333,7 +319,7 @@ class RegisterUI(LoginandRegisterBaseUI):
         self.expslbl = QtWidgets.QLabel(self.ui.centralwidget)
         self.expslbl.setGeometry(QtCore.QRect(360, 160, 291, 31))
         self.expslbl.setText("Must contain: 1 Capital 1 Alphabet 1 Digit")
-        font.setPointSize(11)
+        font.setPointSize(8)
         self.expslbl.setFont(font)
 
     def checkAll(self):
@@ -345,10 +331,11 @@ class RegisterUI(LoginandRegisterBaseUI):
         bd = self.bdLE.text()
         pn = self.pnLE.text()
         checkus = self.checkUser(us)
-        checkps = self.checkPasswordFormat(ps)
-        checkcn = self.checkPasswordFormat(cn)
+        checkps = self.checkPassFormat(ps)
+        checkcn = self.checkPassFormat(cn)
         checkbd = self.checkBDFormat(bd)
         checkpn = self.checkPN(pn)
+        print(checkps)
         # Check user
         if checkus == 0:
             self.errlbl_list[0].setText("Error: Blank space detect")
@@ -490,7 +477,7 @@ class ForgotpsUI(LoginandRegisterBaseUI):
         self.ui.passwordlbl.move(230, 340)
         self.ui.passwordLE.move(380, 340)
         font = QtGui.QFont()
-        font.setPointSize(16)
+        font.setPointSize(10)
         self.ui.passwordlbl.setFont(font)
         self.ui.passwordlbl.setText("New password")
         self.ui.loginbt.setFont(font)
@@ -505,7 +492,7 @@ class ForgotpsUI(LoginandRegisterBaseUI):
         self.birthdateLE.setGeometry(QtCore.QRect(380, 240, 291, 31))
         font = QtGui.QFont()
         font.setFamily("OCR A Extended")
-        font.setPointSize(16)
+        font.setPointSize(10)
         self.birthdateLE.setFont(font)
         # Create Birth date line edit
         self.birthdateLE = QtWidgets.QLineEdit(self.ui.centralwidget)
@@ -513,8 +500,7 @@ class ForgotpsUI(LoginandRegisterBaseUI):
         self.birthdateLE.setFont(font)
         # Create Birth date label
         self.birthdatelbl = QtWidgets.QLabel(self.ui.centralwidget)
-        self.birthdatelbl.setGeometry(QtCore.QRect(240, 240, 141, 31))
-        font.setPointSize(16)
+        self.birthdatelbl.setGeometry(QtCore.QRect(235, 240, 141, 31))
         self.birthdatelbl.setFont(font)
         self.birthdatelbl.setAlignment(QtCore.Qt.AlignCenter)
         self.birthdatelbl.setText("Birth date")
@@ -526,14 +512,12 @@ class ForgotpsUI(LoginandRegisterBaseUI):
         # Create phone num label
         self.phonenumlbl = QtWidgets.QLabel(self.ui.centralwidget)
         self.phonenumlbl.setGeometry(QtCore.QRect(230, 290, 151, 31))
-        font.setPointSize(14)
         self.phonenumlbl.setFont(font)
         self.phonenumlbl.setAlignment(QtCore.Qt.AlignCenter)
         self.phonenumlbl.setText("Phone number")
         # Create phone num line edit
         self.phonenumLE = QtWidgets.QLineEdit(self.ui.centralwidget)
         self.phonenumLE.setGeometry(QtCore.QRect(380, 290, 291, 31))
-        font.setPointSize(16)
         self.phonenumLE.setFont(font)
         # Create confirm Line Edit
         self.confirmLE = QtWidgets.QLineEdit(self.ui.centralwidget)
@@ -543,7 +527,6 @@ class ForgotpsUI(LoginandRegisterBaseUI):
         # Create confirm label
         self.confirmlabel = QtWidgets.QLabel(self.ui.centralwidget)
         self.confirmlabel.setGeometry(QtCore.QRect(230, 390, 151, 31))
-        font.setPointSize(18)
         self.confirmlabel.setFont(font)
         self.confirmlabel.setAlignment(QtCore.Qt.AlignCenter)
         self.confirmlabel.setText("Confirm")
@@ -564,10 +547,10 @@ class ForgotpsUI(LoginandRegisterBaseUI):
         self.erroruslbl.setStyleSheet("color: red;")
         # Create example password label
         self.expslbl = QtWidgets.QLabel(self.ui.centralwidget)
-        self.expslbl.setGeometry(QtCore.QRect(380, 320, 281, 21))
+        self.expslbl.setGeometry(QtCore.QRect(380, 320, 290, 21))
         self.expslbl.setText("Must contain: 1 Capital 1 Alphabet 1 Digit")
-        font.setPointSize(9)
         font = QtGui.QFont()
+        font.setPointSize(7)
         self.expslbl.setFont(font)
 
     def gobackMenu(self):
@@ -607,9 +590,6 @@ class ForgotpsUI(LoginandRegisterBaseUI):
                             self.errornewpslbl.setText("Error: Not match")
             else:
                 self.erroruslbl.setText("Error: Info is wrong!")
-
-
-
 
 
 # Widget index 5

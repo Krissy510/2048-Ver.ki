@@ -7,18 +7,17 @@ class Ui_loginsection(object):
         # Create bg
         self.bg = QtWidgets.QLabel(self.centralwidget)
         self.bg.setGeometry(QtCore.QRect(0, 0, 1000, 700))
-        self.bg.setPixmap(QtGui.QPixmap("sourcepic\\bg1.jpg"))
+        self.bg.setPixmap(QtGui.QPixmap("sourcepic\\bgplain1.png"))
         # Create username line edit
         self.usernameLE = QtWidgets.QLineEdit(self.centralwidget)
         self.usernameLE.setGeometry(QtCore.QRect(380, 200, 291, 31))
         font = QtGui.QFont()
         font.setFamily("OCR A Extended")
-        font.setPointSize(16)
+        font.setPointSize(12)
         self.usernameLE.setFont(font)
         # Create username label
         self.usernamelbl = QtWidgets.QLabel(self.centralwidget)
         self.usernamelbl.setGeometry(QtCore.QRect(240, 200, 141, 31))
-        font.setPointSize(18)
         self.usernamelbl.setFont(font)
         self.usernamelbl.setAlignment(QtCore.Qt.AlignCenter)
         self.usernamelbl.setText("Username")
@@ -26,12 +25,10 @@ class Ui_loginsection(object):
         self.passwordLE = QtWidgets.QLineEdit(self.centralwidget)
         self.passwordLE.setEchoMode(QtWidgets.QLineEdit.Password)
         self.passwordLE.setGeometry(QtCore.QRect(380, 250, 291, 31))
-        font.setPointSize(16)
         self.passwordLE.setFont(font)
         # Create password label
         self.passwordlbl = QtWidgets.QLabel(self.centralwidget)
         self.passwordlbl.setGeometry(QtCore.QRect(240, 250, 141, 31))
-        font.setPointSize(18)
         self.passwordlbl.setFont(font)
         self.passwordlbl.setAlignment(QtCore.Qt.AlignCenter)
         self.passwordlbl.setText("Password")
@@ -42,14 +39,14 @@ class Ui_loginsection(object):
         self.loginbt.setText("Login")
         # Create back button
         self.backbt = QtWidgets.QPushButton(self.centralwidget)
-        self.backbt.setGeometry(QtCore.QRect(20, 630, 171, 51))
+        self.backbt.setGeometry(QtCore.QRect(50, 600, 171, 51))
         font.setPointSize(18)
         self.backbt.setFont(font)
         self.backbt.setText("Back")
         # Create error label
         self.errorlbl = QtWidgets.QLabel(self.centralwidget)
         self.errorlbl.setGeometry(QtCore.QRect(255, 150, 421, 31))
-        font.setPointSize(14)
+        font.setPointSize(12)
         self.errorlbl.setFont(font)
         self.errorlbl.setStyleSheet("color: red;")
 
