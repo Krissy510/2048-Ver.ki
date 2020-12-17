@@ -61,7 +61,6 @@ class Ui_loginsection(object):
         # Create error label
         self.errorlbl = QtWidgets.QLabel(self.centralwidget)
         self.errorlbl.setGeometry(QtCore.QRect(380, 150, 421, 31))
-        font.setPointSize(12)
         self.errorlbl.setFont(font)
         self.errorlbl.setStyleSheet("color: red;")
 

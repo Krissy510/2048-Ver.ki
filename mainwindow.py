@@ -3,6 +3,7 @@ import sys
 import cv2
 import sqlite3
 from PIL import Image
+from time import sleep
 # from PyQt5 import QtCore, QtGui, QtWidgets
 # from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QWidget
@@ -14,6 +15,7 @@ from baseloginui import *
 from changepicui import *
 from menuui import *
 from profileui import *
+from leaderboard import *
 
 class DBedit:
     @staticmethod
@@ -65,6 +67,7 @@ class DBedit:
                 return rank
             else:
                 rank += 1
+
 
 class USER:
     def __init__(self,us):
@@ -439,7 +442,7 @@ class RegisterUI(LoginandRegisterBaseUI):
             self.clearText([self.ui.usernameLE,self.ui.passwordLE,self.confirmationLE,self.bdLE,self.pnLE])
             global player
             player = USER(us)
-            self.gotoChangePic()
+            widget.setCurrentIndex(3)
 
     def gobackEnt(self):
         self.clearText(self.errlbl_list)
@@ -470,7 +473,7 @@ class ChangepicUI(QWidget):
         self.ui.takepicbt.clicked.connect(self.takeapic)
         self.ui.getpicbt.clicked.connect(self.selectpic)
 
-    def foward(self):
+    def forward(self):
         widget.setCurrentIndex(4)
 
     def skipclicked(self):
@@ -478,9 +481,8 @@ class ChangepicUI(QWidget):
         if confirmation == QMessageBox.Yes:
             self.ui.previewlbl.setText("Preview")
             self.timer1.stop()
-            self.foward()
+            self.forward()
             DBedit().updateDatabase(player.us, "pic", 'sourcepic\\player.jpg')
-
 
     def takeapic(self):
         self.timer1.stop()
@@ -527,8 +529,9 @@ class ChangepicUI(QWidget):
             image = Image.open(self.sourcephoto)
             image.save(f'profilepic\\{player.pnum}.jpg')
             DBedit().updateDatabase(player.us,"pic",f'profilepic\\{player.pnum}.jpg')
+            player = USER(player.us)
             widget.setCurrentIndex(5)
-            self.foward()
+            self.forward()
 
 # Widget index 4
 class MenuUI(QWidget):
@@ -536,9 +539,19 @@ class MenuUI(QWidget):
         super().__init__()
         self.ui = Ui_menu()
         self.ui.setupUi(self)
+        self.timer = QTimer()
+        self.timer.start()
+        self.timer.timeout.connect(self.block_guest)
+        self.ui.LeaderBbt.clicked.connect(lambda: widget.setCurrentIndex(9))
         self.ui.profilebt.clicked.connect(self.goto_prof)
         self.ui.changeAbt.clicked.connect(lambda: widget.setCurrentIndex(0))
         self.ui.quitbt.clicked.connect(lambda leave: quit(0))
+
+    def block_guest(self):
+        if player == "Guest":
+            self.ui.profilebt.setEnabled(False)
+        else:
+            self.ui.profilebt.setEnabled(True)
 
     def goto_prof(self):
         if player == "Guest":
@@ -551,8 +564,11 @@ class ProfileUI(QWidget):
     def __init__(self):
         super(ProfileUI, self).__init__()
         # self.widget = QtWidgets.QStackedWidget()
+        self.timer = QTimer()
         self.ui = Ui_profile()
         self.ui.setupUi(self)
+        self.timer.start(1000)
+        self.timer.timeout.connect(self.update_info_lbl)
         self.ui.refreshbt.clicked.connect(self.update_info_lbl)
         self.ui.backbt.clicked.connect(lambda: widget.setCurrentIndex(4))
         self.ui.epbt.clicked.connect(lambda: widget.setCurrentIndex(6))
@@ -561,23 +577,23 @@ class ProfileUI(QWidget):
 
     def update_info_lbl(self):
         global player
-        player = USER(player.us)
-        self.ui.uslbl.setText(f"USERNAME: {player.us}")
-        self.ui.bdlbl.setText(f"BIRTH DATE: {player.bd}")
-        self.ui.pnlbl.setText(f"PHONE NUM: {player.pnum}")
-        self.ui.hslbl.setText(f"HIGH SCORE: {player.hscore}")
-        self.ui.ranklbl.setText(f"RANK: {player.rank}")
-        if player.pic != None:
-            image = Image.open(player.pic)
-            new_img = image.resize((220, 220))
-            new_img.save("temp\\temp.jpg")
-            self.ui.pplbl.setPixmap(QtGui.QPixmap("temp\\temp.jpg"))
-        # else:
-        #     self.ui.pplbl.setPixmap(QtGui.QPixmap("sourcepic\\player.png"))
+        if player != "Guest":
+            player = USER(player.us)
+            self.ui.uslbl.setText(f"USERNAME: {player.us}")
+            self.ui.bdlbl.setText(f"BIRTH DATE: {player.bd}")
+            self.ui.pnlbl.setText(f"PHONE NUM: {player.pnum}")
+            self.ui.hslbl.setText(f"HIGH SCORE: {player.hscore}")
+            self.ui.ranklbl.setText(f"RANK: {player.rank}")
+            if player.pic != None:
+                image = Image.open(player.pic)
+                new_img = image.resize((220, 220))
+                new_img.save("temp\\temp2.jpg")
+                self.ui.pplbl.setPixmap(QtGui.QPixmap("temp\\temp2.jpg"))
+
 
 # Widget index 6
 class SubChangepicUI(ChangepicUI):
-    def foward(self):
+    def forward(self):
         widget.setCurrentIndex(5)
 
 # Widget index 7
@@ -806,12 +822,47 @@ class EditInfoUI(LoginandRegisterBaseUI):
             self.clearText([self.confirmationLE, self.pnLE, self.bdLE])
             successbox("Successfully update database!")
 
+# Widget index 9
+class LeaderboardUI(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_leaderboard()
+        self.ui.setupUi(self)
+        self.ui.backbt.clicked.connect(lambda: widget.setCurrentIndex(4))
+        self.setTextWidget()
+        self.imagelbl_list = [self.ui.rank, self.ui.rank_2, self.ui.rank_3, self.ui.rank_4, self.ui.rank_5, self.ui.rank_6, self.ui.rank_7, self.ui.rank_8, self.ui.rank_9, self.ui.rank_10]
+        self.lbl_list = [self.ui.label, self.ui.label_2, self.ui.label_3, self.ui.label_4, self.ui.label_5, self.ui.label_6, self.ui.label_7, self.ui.label_8, self.ui.label_9, self.ui.label_10]
+        self.setinfo()
+
+    def setTextWidget(self):
+        font = QtGui.QFont()
+        font.setFamily("OCR A Extended")
+        font.setPointSize(18)
+        self.ui.backbt.setFont(font)
+        self.ui.backbt.setText("Back")
+
+    def setinfo(self):
+        con = sqlite3.connect('db.sqlite')
+        cur = con.cursor()
+        cur.execute(f'SELECT username FROM player ORDER BY highscore DESC')
+        for i in range(10):
+            row = cur.fetchone()
+            if row != None:
+                path_pic = DBedit().getitemDatabase(row[0], "pic")
+                rank = DBedit().getRank(row[0])
+                hsc = DBedit().getitemDatabase(row[0], "highscore")
+                image = Image.open(path_pic)
+                new_img = image.resize((100, 92))
+                new_img.save("temp\\temp3.jpg")
+                self.imagelbl_list[i].setPixmap(QtGui.QPixmap("temp\\temp3.jpg"))
+                self.lbl_list[i].setText(f"RANK: {rank}\nUSER: {row[0]}\nHIGH SCORE:{hsc}")
+
 
 
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    player = ""
+    player = "Guest"
     widget = QtWidgets.QStackedWidget()
     widget.addWidget(EntUI())               # 0
     widget.addWidget(LoginUI())             # 1
@@ -822,6 +873,7 @@ if __name__ == "__main__":
     widget.addWidget(SubChangepicUI())      # 6
     widget.addWidget(SubChangePassUI())     # 7
     widget.addWidget(EditInfoUI())          # 8
+    widget.addWidget(LeaderboardUI())       # 9
     widget.setWindowTitle("2048")
     widget.setWindowIcon(QtGui.QIcon("sourcepic\\logo.png"))
     widget.setFixedSize(1000, 700)
