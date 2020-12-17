@@ -39,7 +39,7 @@ class Ui_changePic(object):
         # Create skip button
         self.skipbt = QtWidgets.QPushButton(self.centralwidget)
         self.skipbt.setText("Skip")
-        self.skipbt.setGeometry(QtCore.QRect(450, 610, 121, 41))
+        self.skipbt.setGeometry(QtCore.QRect(450, 620, 121, 41))
         self.skipbt.setFont(font)
 
 
