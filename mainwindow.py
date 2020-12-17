@@ -827,12 +827,15 @@ class LeaderboardUI(QWidget):
     def __init__(self):
         super().__init__()
         self.ui = Ui_leaderboard()
+        self.timer = QTimer()
+        self.timer.start(1000)
+        self.timer.timeout.connect(self.setinfo)
         self.ui.setupUi(self)
         self.ui.backbt.clicked.connect(lambda: widget.setCurrentIndex(4))
         self.setTextWidget()
         self.imagelbl_list = [self.ui.rank, self.ui.rank_2, self.ui.rank_3, self.ui.rank_4, self.ui.rank_5, self.ui.rank_6, self.ui.rank_7, self.ui.rank_8, self.ui.rank_9, self.ui.rank_10]
         self.lbl_list = [self.ui.label, self.ui.label_2, self.ui.label_3, self.ui.label_4, self.ui.label_5, self.ui.label_6, self.ui.label_7, self.ui.label_8, self.ui.label_9, self.ui.label_10]
-        self.setinfo()
+
 
     def setTextWidget(self):
         font = QtGui.QFont()
