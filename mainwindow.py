@@ -1,11 +1,10 @@
 import sys
-import os
+# import os
 import cv2
 import sqlite3
 from PIL import Image
-from time import sleep
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication
+# from PyQt5 import QtCore, QtGui, QtWidgets
+# from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QTimer, QDateTime
@@ -480,6 +479,8 @@ class ChangepicUI(QWidget):
             self.ui.previewlbl.setText("Preview")
             self.timer1.stop()
             self.foward()
+            DBedit().updateDatabase(player.us, "pic", 'sourcepic\\player.jpg')
+
 
     def takeapic(self):
         self.timer1.stop()
@@ -560,6 +561,7 @@ class ProfileUI(QWidget):
 
     def update_info_lbl(self):
         global player
+        player = USER(player.us)
         self.ui.uslbl.setText(f"USERNAME: {player.us}")
         self.ui.bdlbl.setText(f"BIRTH DATE: {player.bd}")
         self.ui.pnlbl.setText(f"PHONE NUM: {player.pnum}")
@@ -570,6 +572,8 @@ class ProfileUI(QWidget):
             new_img = image.resize((220, 220))
             new_img.save("temp\\temp.jpg")
             self.ui.pplbl.setPixmap(QtGui.QPixmap("temp\\temp.jpg"))
+        # else:
+        #     self.ui.pplbl.setPixmap(QtGui.QPixmap("sourcepic\\player.png"))
 
 # Widget index 6
 class SubChangepicUI(ChangepicUI):
@@ -602,6 +606,7 @@ class SubChangePassUI(LoginandRegisterBaseUI):
         font.setPointSize(8)
         self.ui.errorlbl.setFont(font)
         self.ui.usernamelbl.setText("Old password")
+        self.ui.usernamelbl.setFont(font)
         self.ui.passwordlbl.setText("New password")
         self.ui.loginbt.setFont(font)
         self.ui.loginbt.setText("Change password")
