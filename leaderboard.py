@@ -47,7 +47,7 @@ class Ui_leaderboard(object):
         self.label = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
         font.setFamily("OCR A Extended")
-        font.setPointSize(16)
+        font.setPointSize(12)
         self.label.setGeometry(QtCore.QRect(160, 60, 311, 92))
         self.label.setFont(font)
         self.label.setFrameShape(QtWidgets.QFrame.Box)

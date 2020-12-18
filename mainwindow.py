@@ -1,9 +1,10 @@
 import sys
-# import os
+import os
 import cv2
 import sqlite3
 from PIL import Image
 from time import sleep
+import shutil
 # from PyQt5 import QtCore, QtGui, QtWidgets
 # from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QWidget
@@ -513,7 +514,7 @@ class ChangepicUI(QWidget):
 
     def selectpic(self):
         self.timer1.stop()
-        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file','c:\\',"Image files (*.jpg *.png)")
+        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file','D:\\2048proj\\profilepic',"Image files (*.jpg *.png)")
         if fname != ('', ''):
             image = Image.open(fname[0])
             new_img = image.resize((640, 480))
@@ -532,6 +533,7 @@ class ChangepicUI(QWidget):
             player = USER(player.us)
             widget.setCurrentIndex(5)
             self.forward()
+
 
 # Widget index 4
 class MenuUI(QWidget):
@@ -558,6 +560,7 @@ class MenuUI(QWidget):
             errorbox("Guest isn't available for this feature.")
         else:
             widget.setCurrentIndex(5)
+
 
 # Widget index 5
 class ProfileUI(QWidget):
@@ -595,6 +598,7 @@ class ProfileUI(QWidget):
 class SubChangepicUI(ChangepicUI):
     def forward(self):
         widget.setCurrentIndex(5)
+
 
 # Widget index 7
 class SubChangePassUI(LoginandRegisterBaseUI):
@@ -682,6 +686,7 @@ class SubChangePassUI(LoginandRegisterBaseUI):
                 successbox("Successfully changed the password.")
         else:
             self.errorpslbl.setText("Incorrect")
+
 
 # Widget index 8
 class EditInfoUI(LoginandRegisterBaseUI):
@@ -818,9 +823,15 @@ class EditInfoUI(LoginandRegisterBaseUI):
             if checklist[1] == 1:
                 DBedit.updateDatabase(player.us,"bd",bd)
             if checklist[2] == 1:
+                pic_path = player.pic
+                target = rf"D:\2048proj\profilepic\{pn}.jpg"
+                shutil.copyfile(pic_path, target)
                 DBedit.updateDatabase(player.us, "pnum", pn)
+                DBedit.updateDatabase(player.us, "pic", target)
+                os.remove(pic_path)
             self.clearText([self.confirmationLE, self.pnLE, self.bdLE])
             successbox("Successfully update database!")
+
 
 # Widget index 9
 class LeaderboardUI(QWidget):
@@ -835,7 +846,6 @@ class LeaderboardUI(QWidget):
         self.setTextWidget()
         self.imagelbl_list = [self.ui.rank, self.ui.rank_2, self.ui.rank_3, self.ui.rank_4, self.ui.rank_5, self.ui.rank_6, self.ui.rank_7, self.ui.rank_8, self.ui.rank_9, self.ui.rank_10]
         self.lbl_list = [self.ui.label, self.ui.label_2, self.ui.label_3, self.ui.label_4, self.ui.label_5, self.ui.label_6, self.ui.label_7, self.ui.label_8, self.ui.label_9, self.ui.label_10]
-
 
     def setTextWidget(self):
         font = QtGui.QFont()
@@ -854,10 +864,11 @@ class LeaderboardUI(QWidget):
                 path_pic = DBedit().getitemDatabase(row[0], "pic")
                 rank = DBedit().getRank(row[0])
                 hsc = DBedit().getitemDatabase(row[0], "highscore")
-                image = Image.open(path_pic)
-                new_img = image.resize((100, 92))
-                new_img.save("temp\\temp3.jpg")
-                self.imagelbl_list[i].setPixmap(QtGui.QPixmap("temp\\temp3.jpg"))
+                if path_pic != None:
+                    image = Image.open(path_pic)
+                    new_img = image.resize(100, 92)
+                    new_img.save("temp\\temp3.jpg")
+                    self.imagelbl_list[i].setPixmap(QtGui.QPixmap("temp\\temp3.jpg"))
                 self.lbl_list[i].setText(f"RANK: {rank}\nUSER: {row[0]}\nHIGH SCORE:{hsc}")
 
 
