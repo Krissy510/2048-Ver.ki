@@ -866,7 +866,7 @@ class LeaderboardUI(QWidget):
                 hsc = DBedit().getitemDatabase(row[0], "highscore")
                 if path_pic != None:
                     image = Image.open(path_pic)
-                    new_img = image.resize(100, 92)
+                    new_img = image.resize((100, 92))
                     new_img.save("temp\\temp3.jpg")
                     self.imagelbl_list[i].setPixmap(QtGui.QPixmap("temp\\temp3.jpg"))
                 self.lbl_list[i].setText(f"RANK: {rank}\nUSER: {row[0]}\nHIGH SCORE:{hsc}")
