@@ -144,14 +144,12 @@ class Ui_play(object):
 
         self.scorelbl = QtWidgets.QLabel(self.centralwidget)
         self.scorelbl.setGeometry(QtCore.QRect(760, 260, 161, 61))
-        self.scorelbl.setText("SCORE:")
         self.scorelbl.setFont(font)
         self.scorelbl.setFrameShape(QtWidgets.QFrame.Panel)
         # self.scorelbl.setFrameShadow(QtWidgets.QFrame.Sunken)
 
         self.cScorelbl = QtWidgets.QLabel(self.centralwidget)
         self.cScorelbl.setGeometry(QtCore.QRect(760, 210, 161, 41))
-        self.cScorelbl.setText("Current Score")
         self.cScorelbl.setFont(font)
         self.cScorelbl.setAlignment(QtCore.Qt.AlignCenter)
 

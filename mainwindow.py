@@ -222,7 +222,6 @@ class LoginUI(LoginandRegisterBaseUI):
         super(LoginUI, self).__init__()
         self.ui.loginbt.clicked.connect(self.loginbtPressed)
 
-
     def loginbtPressed(self):
         user = self.ui.usernameLE.text()
         ps = self.ui.passwordLE.text()
@@ -1030,8 +1029,8 @@ class PlayUI(QWidget):
             self.highscore = DBedit().getitemDatabase(player.us, "highscore")
         if self.score > self.highscore:
             self.highscore = self.score
-        self.ui.highscorelbl.setText(f"HIGH SCORE: {self.highscore}")
-        self.ui.scorelbl.setText(f"SCORE: {self.score}")
+        self.ui.highscorelbl.setText(f"{self.highscore}")
+        self.ui.scorelbl.setText(f"{self.score}")
         for row in range(self.board.size):
             for col in range(self.board.size):
                 if self.board.board[row][col] == 0:
@@ -1058,7 +1057,7 @@ class PlayUI(QWidget):
                         self.lbllist[row][col].setStyleSheet("background-color: #EDC74E")
                     elif self.board.board[row][col] == 1024:
                         self.lbllist[row][col].setStyleSheet("background-color: #EDC53D")
-                    elif self.board.board[row][col] == 2048:
+                    else:
                         self.lbllist[row][col].setStyleSheet("background-color: #EDC53D")
                     self.lbllist[row][col].setText(str(self.board.board[row][col]))
 
