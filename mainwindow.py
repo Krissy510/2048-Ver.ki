@@ -3,65 +3,56 @@ import os
 import cv2
 import sqlite3
 from PIL import Image
-from time import sleep
+import random
 import shutil
-# from PyQt5 import QtCore, QtGui, QtWidgets
-# from PyQt5.QtWidgets import QApplication
+import datetime
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QTimer, QDateTime
+from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage
+from PyQt5.Qt import Qt
 from entui import *
 from baseloginui import *
 from changepicui import *
 from menuui import *
 from profileui import *
 from leaderboard import *
+from playui import *
+#from logic import *
 
 class DBedit:
-    @staticmethod
-    def checkItemExist(item, type):
-        con = sqlite3.connect('db.sqlite')
-        cur = con.cursor()
-        cur.execute(f'SELECT {type} FROM player ')
-        row = cur.fetchall()
+    def __init__(self):
+        self.con = sqlite3.connect('db.sqlite')
+        self.cur = self.con.cursor()
+
+    def checkItemExist(self,item, type):
+        self.cur.execute(f'SELECT {type} FROM player ')
+        row = self.cur.fetchall()
         for value in row:
             if item == value[0]:
                 return True
         return False
 
-    @staticmethod
-    def adddatabase(us,ps,bd,pn):
-        con = sqlite3.connect('db.sqlite')
-        cur = con.cursor()
+    def adddatabase(self,us,ps,bd,pn):
         sql = "INSERT OR IGNORE INTO player VALUES (?,?,?,?,0,NULL)"
-        cur.execute(sql, (us, ps, bd, pn))
-        con.commit()
+        self.cur.execute(sql, (us, ps, bd, pn))
+        self.con.commit()
 
-    @staticmethod
-    def getitemDatabase(us,type):
-        con = sqlite3.connect('db.sqlite')
-        cur = con.cursor()
-        cur.execute(f'SELECT username,{type} FROM player')
-        row = cur.fetchall()
+    def getitemDatabase(self,us,type):
+        self.cur.execute(f'SELECT username,{type} FROM player')
+        row = self.cur.fetchall()
         for value in row:
             if us == value[0]:
                 return value[1]
 
-    @staticmethod
-    def updateDatabase(us,type,new):
-        con = sqlite3.connect('db.sqlite')
-        cur = con.cursor()
+    def updateDatabase(self,us,type,new):
         sql = f"UPDATE player SET {type} = ? WHERE username = ?"
-        cur.execute(sql,[new,us])
-        con.commit()
+        self.cur.execute(sql,[new,us])
+        self.con.commit()
 
-    @staticmethod
-    def getRank(us):
-        con = sqlite3.connect('db.sqlite')
-        cur = con.cursor()
-        cur.execute(f'SELECT username FROM player ORDER BY highscore DESC')
-        row = cur.fetchall()
+    def getRank(self,us):
+        self.cur.execute(f'SELECT username FROM player ORDER BY highscore DESC')
+        row = self.cur.fetchall()
         rank = 1
         for value in row:
             if us == value[0]:
@@ -217,10 +208,6 @@ class LoginandRegisterBaseUI(QWidget):
         widget.setCurrentIndex(4)
 
     @staticmethod
-    def gotoRegister():
-        widget.setCurrentIndex(2)
-
-    @staticmethod
     def gotoLogin():
         widget.setCurrentIndex(1)
 
@@ -274,6 +261,7 @@ class RegisterUI(LoginandRegisterBaseUI):
         self.editUI()
         self.additionwidget()
         self.errlbl_list = [self.erroruslbl,self.errorpslbl,self.errorcnlbl,self.errorbdlbl,self.errorpnlbl]
+        self.lineEDIT_list = [self.ui.usernameLE, self.ui.passwordLE, self.bdLE, self.pnLE, self.confirmationLE]
         self.ui.loginbt.clicked.connect(self.checkAll)
 
     def editUI(self):
@@ -440,14 +428,14 @@ class RegisterUI(LoginandRegisterBaseUI):
             DBedit().adddatabase(us,ps,bd,pn)
             successbox(f"Successfully registered as {us}")
             self.clearText(self.errlbl_list)
-            self.clearText([self.ui.usernameLE,self.ui.passwordLE,self.confirmationLE,self.bdLE,self.pnLE])
+            self.clearText(self.lineEDIT_list)
             global player
             player = USER(us)
-            widget.setCurrentIndex(3)
+            self.gotoMenu()
 
     def gobackEnt(self):
         self.clearText(self.errlbl_list)
-        self.clearText([self.ui.usernameLE, self.ui.passwordLE, self.bdLE, self.pnLE, self.confirmationLE])
+        self.clearText(self.lineEDIT_list)
         super().gobackEnt()
 
 
@@ -531,7 +519,7 @@ class ChangepicUI(QWidget):
             image.save(f'profilepic\\{player.pnum}.jpg')
             DBedit().updateDatabase(player.us,"pic",f'profilepic\\{player.pnum}.jpg')
             player = USER(player.us)
-            widget.setCurrentIndex(5)
+            self.ui.previewlbl.setText("Preview")
             self.forward()
 
 
@@ -544,6 +532,7 @@ class MenuUI(QWidget):
         self.timer = QTimer()
         self.timer.start()
         self.timer.timeout.connect(self.block_guest)
+        self.ui.playbt.clicked.connect(lambda: widget.setCurrentIndex(10))
         self.ui.LeaderBbt.clicked.connect(lambda: widget.setCurrentIndex(9))
         self.ui.profilebt.clicked.connect(self.goto_prof)
         self.ui.changeAbt.clicked.connect(lambda: widget.setCurrentIndex(0))
@@ -612,7 +601,7 @@ class SubChangePassUI(LoginandRegisterBaseUI):
 
     def gotoLogin(self):
         self.clearText([self.ui.passwordLE,self.confirmLE,self.ui.errorlbl])
-        widget.setCurrentIndex(5)
+        super().gotoLogin()
 
     def editUI(self):
         self.ui.passwordlbl.move(230, 280)
@@ -666,8 +655,6 @@ class SubChangePassUI(LoginandRegisterBaseUI):
         self.oldpasswordLE.setGeometry(QtCore.QRect(380, 200, 291, 31))
         self.oldpasswordLE.setFont(font)
 
-
-
     def changePS(self):
         global player
         if self.oldpasswordLE.text() == DBedit().getitemDatabase(player.us,"password"):
@@ -676,9 +663,9 @@ class SubChangePassUI(LoginandRegisterBaseUI):
             con = self.confirmLE.text()
             check_cn = self.checkPassFormat(con)
             self.clearText([self.ui.errorlbl,self.errorpslbl])
-            if new_ps == 0 or check_cn == 0:
+            if check_ps == 0 or check_cn == 0:
                 self.ui.errorlbl.setText("Blank space detect")
-            elif new_ps == -1 or check_cn == -1:
+            elif check_ps == -1 or check_cn == -1:
                 self.ui.errorlbl.setText("Invalid Format")
             else:
                 self.clearText([self.ui.passwordLE, self.confirmLE,self.oldpasswordLE])
@@ -844,8 +831,14 @@ class LeaderboardUI(QWidget):
         self.ui.setupUi(self)
         self.ui.backbt.clicked.connect(lambda: widget.setCurrentIndex(4))
         self.setTextWidget()
-        self.imagelbl_list = [self.ui.rank, self.ui.rank_2, self.ui.rank_3, self.ui.rank_4, self.ui.rank_5, self.ui.rank_6, self.ui.rank_7, self.ui.rank_8, self.ui.rank_9, self.ui.rank_10]
-        self.lbl_list = [self.ui.label, self.ui.label_2, self.ui.label_3, self.ui.label_4, self.ui.label_5, self.ui.label_6, self.ui.label_7, self.ui.label_8, self.ui.label_9, self.ui.label_10]
+        self.imagelbl_list = [self.ui.rank, self.ui.rank_2, self.ui.rank_3,
+                              self.ui.rank_4, self.ui.rank_5, self.ui.rank_6,
+                              self.ui.rank_7, self.ui.rank_8, self.ui.rank_9,
+                              self.ui.rank_10]
+        self.lbl_list = [self.ui.label, self.ui.label_2, self.ui.label_3,
+                         self.ui.label_4, self.ui.label_5, self.ui.label_6,
+                         self.ui.label_7, self.ui.label_8, self.ui.label_9,
+                         self.ui.label_10]
 
     def setTextWidget(self):
         font = QtGui.QFont()
@@ -872,10 +865,271 @@ class LeaderboardUI(QWidget):
                 self.lbl_list[i].setText(f"RANK: {rank}\nUSER: {row[0]}\nHIGH SCORE:{hsc}")
 
 
+class Board:
+    def __init__(self, size):
+        self.score = 0
+        self.size = size
+        self.board = self.createboard()
+        self.fill_ran_num(2)
+
+    def createboard(self):
+        board = []
+        for row in range(self.size):
+            board.append([])
+            for col in range(self.size):
+                board[row].append(0)
+        return board
+
+    def dis_board(self):
+        for row in range(self.size):
+            for col in range(self.size):
+                print(f"{self.board[row][col]:<7d}", end="")
+            print("")
+
+    def swap_ver(self):
+        new_board = []
+        for row in range(self.size):
+            temp = []
+            for col in range(self.size):
+                temp.append(self.board[col][row])
+            new_board.append(temp)
+        self.board = new_board
+
+    def pre_move(self, direction):
+        check = 0
+        if direction == "left":
+            self.swap_zero("left")
+            for row in range(self.size):
+                for col in range(self.size-1):
+                    if self.board[row][col] > 0 and self.board[row][col + 1] == self.board[row][col]:
+                        check += 1
+                        self.board[row][col] *= 2
+                        self.score += self.board[row][col]
+                        print(f"{self.board[row][col]} has been add to the score")
+                        self.board[row][col + 1] = 0
+                        self.swap_zero("left")
+
+        elif direction == "right":
+            self.swap_zero("right")
+            for row in range(self.size):
+                for col in range(1, self.size):
+                    if self.board[row][-col] > 0 and self.board[row][-(col + 1)] == self.board[row][-col]:
+                        check += 1
+                        self.board[row][-col] *= 2
+                        self.score += self.board[row][-col]
+                        print(f"{self.board[row][-col]} has been add to the score")
+                        self.board[row][-(col + 1)] = 0
+                        self.swap_zero("right")
+        if check == 0:
+            return False
+        elif check > 0:
+            return True
+        else:
+            print("ERROR CHECK")
+
+    def fill_ran_num(self, amount):
+        possible_pos = []
+        # Check if there is any space to fill random number
+        for row in range(self.size):
+            for column in range(self.size):
+                if self.board[row][column] == 0:
+                    possible_pos.append([row, column])
+        if possible_pos == [] or (len(possible_pos) < amount):
+            return False
+        else:
+            possible_am = len(possible_pos) - 1
+            for i in range(amount):
+                ran_num = random.randint(0, possible_am)
+                ran_num2 = random.choice([2, 4])
+                select_pos = possible_pos[ran_num]
+                self.board[select_pos[0]][select_pos[1]] = ran_num2
+                del possible_pos[ran_num]
+                possible_am -= 1
+            return True
+
+    def swap_zero(self, direction):
+        if direction == "left":
+            for row in range(self.size):
+                if 0 in self.board[row]:
+                    for col in range(self.size):
+                        if self.board[row][col] == 0:
+                            self.board[row].remove(0)
+                            self.board[row].append(0)
+        elif direction == "right":
+            for row in range(self.size):
+                if 0 in self.board[row]:
+                    temp_list =[]
+                    for item in self.board[row]:
+                        if item != 0:
+                            temp_list.append(item)
+                    for item in temp_list:
+                        self.board[row].remove(item)
+                        self.board[row].append(item)
+
+    def move(self, direction):
+        if direction in ["left","right"]:
+            check = self.pre_move(direction)
+        elif direction == "up":
+            self.swap_ver()
+            check = self.pre_move("left")
+            self.swap_ver()
+        elif direction == "down":
+            self.swap_ver()
+            check = self.pre_move("right")
+            self.swap_ver()
+        else:
+            print("ERROR wrong command at move func")
+            check = 0
+        return check
+
+    def checkWin(self):
+        for row in range(self.size):
+            for col in range(self.size):
+                if self.board[row][col] == 2048:
+                    return True
+        return False
+
+    def checkPosMove(self):
+        check = False
+        temp = tuple(self.board)
+        temp = list(temp)
+        # first check
+        for row in range(self.size-1):
+            for col in range(self.size-1):
+                if temp[row][col] == temp[row][col+1] or temp[row][col] == temp[row+1][col]:
+                    check = True
+        # second check
+        for val in range(self.size-1):
+            if temp[self.size-1][val] == temp[self.size-1][val+1] or temp[val][self.size-1] == temp[val+1][self.size-1]:
+                check = True
+        return check
+
+
+# Widget index  10
+class PlayUI(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_play()
+        self.ui.setupUi(self)
+        self.score = 0
+        self.highscore = 0
+        self.lbllist = [[self.ui.label_1,self.ui.label_5,self.ui.label_9,self.ui.label_13],
+                        [self.ui.label_2,self.ui.label_6,self.ui.label_10,self.ui.label_14],
+                        [self.ui.label_3,self.ui.label_7,self.ui.label_11,self.ui.label_15],
+                        [self.ui.label_4,self.ui.label_8,self.ui.label_12,self.ui.label_16]]
+        self.board = Board(4)
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.updateall_label)
+        self.timer.start()
+
+
+    def updateall_label(self):
+        global player
+        self.score = self.board.score
+        if player != "Guest":
+            self.highscore = DBedit().getitemDatabase(player.us, "highscore")
+        if self.score > self.highscore:
+            self.highscore = self.score
+        self.ui.highscorelbl.setText(f"HIGH SCORE: {self.highscore}")
+        self.ui.scorelbl.setText(f"SCORE: {self.score}")
+        for row in range(self.board.size):
+            for col in range(self.board.size):
+                if self.board.board[row][col] == 0:
+                    self.lbllist[row][col].setStyleSheet("background-color: #CDC1B4")
+                    self.lbllist[row][col].setText("")
+                else:
+                    if self.board.board[row][col] == 2:
+                        self.lbllist[row][col].setStyleSheet("background-color: #EEE3D9")
+                    elif self.board.board[row][col] == 4:
+                        self.lbllist[row][col].setStyleSheet("background-color: #ECE0C8")
+                    elif self.board.board[row][col] == 8:
+                        self.lbllist[row][col].setStyleSheet("background-color: #F1B178")
+                    elif self.board.board[row][col] == 16:
+                        self.lbllist[row][col].setStyleSheet("background-color: #F69664")
+                    elif self.board.board[row][col] == 32:
+                        self.lbllist[row][col].setStyleSheet("background-color: #F47C60")
+                    elif self.board.board[row][col] == 64:
+                        self.lbllist[row][col].setStyleSheet("background-color: #F15F3C")
+                    elif self.board.board[row][col] == 128:
+                        self.lbllist[row][col].setStyleSheet("background-color: #EDCF73")
+                    elif self.board.board[row][col] == 256:
+                        self.lbllist[row][col].setStyleSheet("background-color: #EECC62")
+                    elif self.board.board[row][col] == 512:
+                        self.lbllist[row][col].setStyleSheet("background-color: #EDC74E")
+                    elif self.board.board[row][col] == 1024:
+                        self.lbllist[row][col].setStyleSheet("background-color: #EDC53D")
+                    elif self.board.board[row][col] == 2048:
+                        self.lbllist[row][col].setStyleSheet("background-color: #EDC53D")
+                    self.lbllist[row][col].setText(str(self.board.board[row][col]))
+
+    def resetgame(self):
+        self.board = Board(4)
+        self.score = 0
+        self.updateall_label()
+        widget.setCurrentIndex(4)
+
+    def keyPressEvent(self, event):
+        check = True
+        check2 = False
+        if event.key() == Qt.Key_Up:
+            check2 = True
+            self.board.move("up")
+            self.updateall_label()
+            print("Move UP")
+            check = self.board.fill_ran_num(1)
+            self.board.dis_board()
+            #self.board.board = [[2048,2,0,2],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+        elif event.key() == Qt.Key_Down:
+            check2 = True
+            self.board.move("down")
+            self.updateall_label()
+            print("Move Down")
+            check = self.board.fill_ran_num(1)
+            self.board.dis_board()
+        elif event.key() == Qt.Key_Left:
+            check2 = True
+            self.board.move("left")
+            self.updateall_label()
+            print("Move Left")
+            check = self.board.fill_ran_num(1)
+            self.board.dis_board()
+        elif event.key() == Qt.Key_Right:
+            check2 = True
+            self.board.move("right")
+            self.updateall_label()
+            print("Move Right")
+            check = self.board.fill_ran_num(1)
+            self.board.dis_board()
+        if check2 == True:
+            global player
+            if self.board.checkWin():
+                self.highscore += 2048
+                successbox(f"CONGRATULATIONS\nYOU WIN!\nYou got an extra 2048 points!\nNow your High score is {self.highscore}!\nThank you for playing!")
+                if player != "Guest":
+                    DBedit().updateDatabase(player.us, "highscore", self.highscore)
+                self.resetgame()
+            elif check == False:
+                if self.board.checkPosMove() == False:
+                    esg = QMessageBox()
+                    esg.setIcon(QMessageBox.Critical)
+                    esg.setWindowTitle("GAME OVER")
+                    esg.setWindowIcon(QtGui.QIcon('sourcepic\\erroricon.png'))
+                    if player != "Guest":
+                        esg.setText(f"GAME OVER\nYour current High score is {self.highscore}\nThank you for playing!")
+                    else:
+                        esg.setText(f"GAME OVER\nYou got {self.score} points\nThank you for playing!")
+                    esg.setStandardButtons(QMessageBox.Close)
+                    esg.exec_()
+                    if player != "Guest":
+                        DBedit().updateDatabase(player.us, "highscore", self.highscore)
+                    self.resetgame()
+
+
 
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    random.seed(datetime.datetime.now())
     player = "Guest"
     widget = QtWidgets.QStackedWidget()
     widget.addWidget(EntUI())               # 0
@@ -888,6 +1142,7 @@ if __name__ == "__main__":
     widget.addWidget(SubChangePassUI())     # 7
     widget.addWidget(EditInfoUI())          # 8
     widget.addWidget(LeaderboardUI())       # 9
+    widget.addWidget(PlayUI())              # 10
     widget.setWindowTitle("2048")
     widget.setWindowIcon(QtGui.QIcon("sourcepic\\logo.png"))
     widget.setFixedSize(1000, 700)
