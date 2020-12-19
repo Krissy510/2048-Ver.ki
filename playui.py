@@ -22,7 +22,7 @@ class Ui_play(object):
         self.label_2 = QtWidgets.QLabel(self.gridLayoutWidget)
         font = QtGui.QFont()
         font.setFamily("OCR A Extended")
-        font.setPointSize(16)
+        font.setPointSize(26)
         self.label_2.setFont(font)
         self.label_2.setFrameShape(QtWidgets.QFrame.Panel)
         self.label_2.setTextFormat(QtCore.Qt.AutoText)

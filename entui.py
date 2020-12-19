@@ -10,7 +10,6 @@ class Ui_entranceSection(object):
         self.bg.setGeometry(QtCore.QRect(0, 0, 1000, 700))
         self.bg.setPixmap(QtGui.QPixmap("sourcepic\\bgplain1.png"))
         self.setup_UI_button()
-
     def setup_UI_button(self):
         # Create login button
         self.loginbt = QtWidgets.QPushButton(self.centralwidget)
@@ -36,11 +35,3 @@ class Ui_entranceSection(object):
         self.qtbt.setGeometry(QtCore.QRect(350, 470, 300, 100))
         self.qtbt.setFont(font)
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    entranceSection = QtWidgets.QMainWindow()
-    ui = Ui_entranceSection()
-    ui.setupUi(entranceSection)
-    entranceSection.show()
-    sys.exit(app.exec_())

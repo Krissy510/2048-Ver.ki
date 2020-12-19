@@ -501,7 +501,7 @@ class ChangepicUI(QWidget):
 
     def selectpic(self):
         self.timer1.stop()
-        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file',"C:\\Users\\Asus\\Pictures\\","Image files (*.jpg *.png)")
+        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file','D:\\2048proj\\profilepic',"Image files (*.jpg *.png)")
         if fname != ('', ''):
             image = Image.open(fname[0])
             new_img = image.resize((640, 480))
@@ -1039,32 +1039,30 @@ class PlayUI(QWidget):
         for row in range(self.board.size):
             for col in range(self.board.size):
                 if self.board.board[row][col] == 0:
-                    self.lbllist[row][col].setStyleSheet("background-color: #CDC1B4")
-                    self.lbllist[row][col].setText("")
+                    self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile.jpg"))
                 else:
                     if self.board.board[row][col] == 2:
-                        self.lbllist[row][col].setStyleSheet("background-color: #EEE3D9")
+                        self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile2.jpg"))
                     elif self.board.board[row][col] == 4:
-                        self.lbllist[row][col].setStyleSheet("background-color: #ECE0C8")
+                        self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile4.jpg"))
                     elif self.board.board[row][col] == 8:
-                        self.lbllist[row][col].setStyleSheet("background-color: #F1B178")
+                        self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile8.jpg"))
                     elif self.board.board[row][col] == 16:
-                        self.lbllist[row][col].setStyleSheet("background-color: #F69664")
+                        self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile16.jpg"))
                     elif self.board.board[row][col] == 32:
-                        self.lbllist[row][col].setStyleSheet("background-color: #F47C60")
+                        self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile32.jpg"))
                     elif self.board.board[row][col] == 64:
-                        self.lbllist[row][col].setStyleSheet("background-color: #F15F3C")
+                        self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile64.jpg"))
                     elif self.board.board[row][col] == 128:
-                        self.lbllist[row][col].setStyleSheet("background-color: #EDCF73")
+                        self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile128.jpg"))
                     elif self.board.board[row][col] == 256:
-                        self.lbllist[row][col].setStyleSheet("background-color: #EECC62")
+                        self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile256.jpg"))
                     elif self.board.board[row][col] == 512:
-                        self.lbllist[row][col].setStyleSheet("background-color: #EDC74E")
+                        self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile512.jpg"))
                     elif self.board.board[row][col] == 1024:
-                        self.lbllist[row][col].setStyleSheet("background-color: #EDC53D")
+                        self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile1024.jpg"))
                     else:
-                        self.lbllist[row][col].setStyleSheet("background-color: #EDC53D")
-                    self.lbllist[row][col].setText(str(self.board.board[row][col]))
+                        self.lbllist[row][col].setPixmap(QtGui.QPixmap("sourcepic\\tile2048.jpg"))
 
     def resetgame(self):
         self.board = Board(4)
@@ -1082,7 +1080,7 @@ class PlayUI(QWidget):
             print("Move UP")
             check = self.board.fill_ran_num(1)
             self.board.dis_board()
-            # self.board.board = [[2048,2,0,2],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+            #self.board.board = [[2048,2,0,2],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
         elif event.key() == Qt.Key_Down:
             check2 = True
             self.board.move("down")
