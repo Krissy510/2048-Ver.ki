@@ -22,7 +22,7 @@ class Ui_play(object):
         self.label_2 = QtWidgets.QLabel(self.gridLayoutWidget)
         font = QtGui.QFont()
         font.setFamily("OCR A Extended")
-        font.setPointSize(12)
+        font.setPointSize(16)
         self.label_2.setFont(font)
         self.label_2.setFrameShape(QtWidgets.QFrame.Panel)
         self.label_2.setTextFormat(QtCore.Qt.AutoText)
@@ -149,6 +149,8 @@ class Ui_play(object):
         # self.scorelbl.setFrameShadow(QtWidgets.QFrame.Sunken)
 
         self.cScorelbl = QtWidgets.QLabel(self.centralwidget)
+        self.cScorelbl.setText("Current score")
+        font.setPointSize(9)
         self.cScorelbl.setGeometry(QtCore.QRect(760, 210, 161, 41))
         self.cScorelbl.setFont(font)
         self.cScorelbl.setAlignment(QtCore.Qt.AlignCenter)

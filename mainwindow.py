@@ -430,7 +430,7 @@ class RegisterUI(LoginandRegisterBaseUI):
             self.clearText(self.lineEDIT_list)
             global player
             player = USER(us)
-            self.gotoMenu()
+            widget.setCurrentIndex(3)
 
     def gobackEnt(self):
         self.clearText(self.errlbl_list)
@@ -594,8 +594,9 @@ class SubChangePassUI(LoginandRegisterBaseUI):
         super().__init__()
         self.editUI()
         self.additional_UI()
-        self.ui.backbt.clicked.connect(self.gotoLogin)
+        self.ui.backbt.clicked.connect(lambda: widget.setCurrentIndex(5))
         self.ui.loginbt.clicked.connect(self.changePS)
+
 
 
     def gotoLogin(self):
@@ -810,13 +811,17 @@ class EditInfoUI(LoginandRegisterBaseUI):
                 DBedit.updateDatabase(player.us,"bd",bd)
             if checklist[2] == 1:
                 pic_path = player.pic
-                target = rf"D:\2048proj\profilepic\{pn}.jpg"
-                shutil.copyfile(pic_path, target)
-                DBedit.updateDatabase(player.us, "pnum", pn)
-                DBedit.updateDatabase(player.us, "pic", target)
-                os.remove(pic_path)
+                if pic_path != r"sourcepic\player.jpg":
+                    target = rf"profilepic\{pn}.jpg"
+                    shutil.copyfile(pic_path, target)
+                    DBedit().updateDatabase(player.us, "pnum", pn)
+                    DBedit().updateDatabase(player.us, "pic", target)
+                    os.remove(pic_path)
+                else:
+                    DBedit().updateDatabase(player.us, "pnum", pn)
             self.clearText([self.confirmationLE, self.pnLE, self.bdLE])
             successbox("Successfully update database!")
+
 
 
 # Widget index 9
