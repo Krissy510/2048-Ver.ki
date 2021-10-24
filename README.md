@@ -7,15 +7,13 @@ Before I enrolled in SE KMITL I liked to play 2048 because it is a fun game that
 That's is why I'd like to create my own 2048 from scratch and I want to improve with some features.<br/>
 Not to mention that it is a good opportunity for me to practice my basic skill of programming.
 # Features
-* The normal gameplay that you would normally have<br/>
-* The UI for the game<br/>
-* The Userdata - Finished<br/>
-* Leader board<br/>
-* Save profile picture - Finished<br/>
-* Menu<br/>
-* Personal score - Finished<br/>
-* Change password - Finished<br/>
-* Change user<br/>
+* The normal gameplay that you would normally have
+* Leader board
+* Save profile picture
+* Menu
+* Personal score
+* Change password
+* Change user
 # Language
 Python
 # Libary
