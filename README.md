@@ -15,11 +15,10 @@ That is why I'd like to create my own 2048 from scratch and add some additional 
 * Take live profile picture from camera
 * Leaderboard
 
-# Language
-Python
-
-# Libary
-[PyQt5](https://pypi.org/project/PyQt5/)
+# Tech Stack
+* Language: Python
+* Frameworks: [PyQt5](https://pypi.org/project/PyQt5/)
+* Database: SQLite
 
 # What did I learn?
 * Good structure and planning equals to getting less code to refactor
